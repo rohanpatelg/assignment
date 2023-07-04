@@ -2,7 +2,7 @@ import { Users } from '../entity/user.entity';
 import { getRepository } from '../data-source';
 import { Repository } from 'typeorm';
 
-export class UsersRepository {
+export class UserRepository {
   private usersRepository: Repository<Users>;
 
   public constructor() {
@@ -22,6 +22,7 @@ export class UsersRepository {
   }
   async createUser(userData: Partial<Users>): Promise<Users> {
     const newUser = this.usersRepository.create(userData);
+    console.log(newUser);
     return this.usersRepository.save(newUser);
   }
   async updateUserById(id: string, userData: Partial<Users>): Promise<Users[] | undefined> {

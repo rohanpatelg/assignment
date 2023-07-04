@@ -30,6 +30,15 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
-        "quotes":["error","single"]
+        // "quotes":["error","single"],
+        // "require-jsdoc": ["error", {
+        //     "require": {
+        //         "FunctionDeclaration": true,
+        //         "MethodDefinition": true,
+        //         "ClassDeclaration": true,
+        //         "ArrowFunctionExpression": true,
+        //         "FunctionExpression": true
+        //     }
+        //}]
     }
 }

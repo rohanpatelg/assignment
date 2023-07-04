@@ -1,12 +1,18 @@
-import { initializeAppDataSource,deleteAppDataSource } from './data-source'
-import { Users } from './entity/user.entity';
-import { UsersRepository } from './repository/user.repository';
-import express from 'express';
-import router from './routes/user.routes';
-const app = express();
-app.use(express.json());
-initializeAppDataSource();
-app.use('/',router)
-app.listen(3000);
+import  {Express} from 'express';
+import { App } from './lib/app';
+App.getApp().then((app:Express)=>{
+    app.listen(3002);
+})
+//  const app = express();
+// try{
 
+//     app.use(express.json());
+//     app.listen(3002);
+//     initializeAppDataSource().then(()=>{
+//         app.use('/',router)
+//     });
+    
+// }catch(err){
+//     console.log('Error',err);
+// }
 
