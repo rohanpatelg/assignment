@@ -1,7 +1,10 @@
+
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { jwtConfig } from '../../config';
-
+/**
+ * Authenticate the user based on the token received from request headers.
+ */
 export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
   try{
     

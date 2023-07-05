@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
 @Entity()
@@ -13,7 +14,7 @@ export class Users {
     @Column()
     password: string
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn('uuid')
     id: string
 
 }

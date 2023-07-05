@@ -1,10 +1,16 @@
 // src/services/UserService.ts
 
-import { UserRepository } from "../repository/user.repository";
-import { Users } from "../entity/User.entity";
-
+import { UserRepository } from '../repository/user.repository';
+import { Users } from '../entity/User.entity';
+/**
+ * Service for user-related operations.
+ */
 export class UserService {
   private userRepository: UserRepository;
+
+   /**
+   * Initializes the repository
+   */
   constructor() {
     this.userRepository = new UserRepository();
   }
@@ -13,39 +19,61 @@ export class UserService {
       const user = await this.userRepository.findAll();
       return user;
     } catch (err) {
-      console.log("Error retrieving user:", err);
+      console.log('Error retrieving user:', err);
       throw err;
     }
   };
 
-  getUserByEmail = async (email: string): Promise<Users[] | undefined> => {
+  /**
+   * Get a user by Email.
+   * @param {string} id - The ID of the user.
+   * @returns {Users} The user object.
+   */
+
+  getUserByEmail = async (email: string): Promise<Users> => {
     try {
       const user = await this.userRepository.findByEmail(email);
-      return user;
+      return user[0];
     } catch (err) {
-      console.log("Error retrieving user:", err);
+      console.log('Error retrieving user:', err);
       throw err;
     }
   };
+  /**
+   * 
+   * Get a user by Email and Password.
+   * @param {string} id - The ID of the user.
+   * @returns {Users} The user object.
+   * 
+   */
   getUserByEmailAndPassword = async (
     email: string,
     password: string
-  ): Promise<Users[] | undefined> => {
+  ): Promise<Users> => {
     try {
-      console.log("first");
+      console.log('first');
       const user = await this.userRepository.findByEmailAndPassword(
         email,
         password
       );
-      console.log(user);
-      return user;
+      return user[0];
     } catch (err) {
-      console.log("PP");
-      console.log("Error retrieving user:", err);
+      console.log('PP');
+      console.log('Error retrieving user:', err);
       throw err;
     }
   };
 
+  /**
+   * 
+   * Create a new user.
+   * @param {id} id - The id generated vis uuidv4. Primary key.
+   * @param {string} name - The name of the user.
+   * @param {string} email - The email of the user.
+   * @param {string} password - The password of the user.
+   * @returns {Users} The created user object.
+   * 
+   */
   createUser = async (
     id: string,
     name: string,
@@ -66,16 +94,23 @@ export class UserService {
         return user;
       }
     } catch (err) {
-      console.log("Error creating user:", err);
+      console.log('Error creating user:', err);
       throw err;
     }
   };
 
+  /**
+   * Update a user's details.
+   * @param {string} password - The password of the user.
+   * @param {string} name - The new name of the user.
+   * @param {string} email - The new email of the user.
+   * @returns {User} The updated user object.
+   */
   updateNameByEmailAndPassword = async (
     name: string,
     email: string,
     password: string
-  ): Promise<Users[] | undefined> => {
+  ): Promise<Users | undefined> => {
     try {
       const user = await this.userRepository.findByEmailAndPassword(
         email,
@@ -88,20 +123,25 @@ export class UserService {
             email,
             password,
           });
-        return updatedUser;
+        return updatedUser[0];
       } else {
         return null;
       }
     } catch (err) {
-      console.log("Error updating user", err);
+      console.log('Error updating user', err);
       throw err;
     }
   };
-
+ /**
+   * Delete a user by ID.
+   * @param {string} email - The email of the user.
+   * @param {string} password - The password of the user.
+   * @returns {boolean} Indicates whether the user was successfully deleted or not.
+   */
   deleteUserByEmailAndPassword = async (
     email: string,
     password: string
-  ): Promise<void | string> => {
+  ): Promise<boolean> => {
     try {
       const user = await this.userRepository.findByEmailAndPassword(
         email,
@@ -109,10 +149,10 @@ export class UserService {
       );
       if (user && user.length > 0) {
         await this.userRepository.delete(email);
-        return "Successfully deleted user with email: " + email;
-      } else return null;
+        return true;
+      } else return false;
     } catch (err) {
-      console.log("Error deleting user", err);
+      console.log('Error deleting user', err);
       throw err;
     }
   };

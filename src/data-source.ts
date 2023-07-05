@@ -16,18 +16,10 @@ export const  AppDataSource = new DataSource({
     migrations: [],
     subscribers: [],
 })
-export const initializeAppDataSource =async () =>{
-   await  AppDataSource.initialize().then(async () => {
-
-        console.log('Connection to the database...')
-    }).catch(error => console.log(error))
-}
-export const deleteAppDataSource = async () =>{
-    await AppDataSource.destroy().then(async () => {
-        console.log('Connection to the database is destroyed successfully');
-    }).catch(error=>console.log(error));
-}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/**
+ * @param {EntityTarget<any>} entity - The entity target.
+ * @returns {Repository<any>} - The repository for the given entity.
+ */
 export const getRepository = (entity:EntityTarget<any>):Repository<any> =>{
     try{
 
