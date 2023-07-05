@@ -32,7 +32,7 @@ export class UserService {
 
   getUserByEmail = async (email: string): Promise<Users> => {
     try {
-      const user = await this.userRepository.findByEmail(email);
+      const user = email&&await this.userRepository.findByEmail(email);
       return user[0];
     } catch (err) {
       console.log('Error retrieving user:', err);
@@ -51,14 +51,12 @@ export class UserService {
     password: string
   ): Promise<Users> => {
     try {
-      console.log('first');
-      const user = await this.userRepository.findByEmailAndPassword(
+      const user =email&&password&& await this.userRepository.findByEmailAndPassword(
         email,
         password
       );
       return user[0];
     } catch (err) {
-      console.log('PP');
       console.log('Error retrieving user:', err);
       throw err;
     }
@@ -81,7 +79,7 @@ export class UserService {
     password: string
   ): Promise<Users> => {
     try {
-      const alreadyExistingUser = await this.userRepository.findByEmail(email);
+      const alreadyExistingUser =email&& await this.userRepository.findByEmail(email);
       if (alreadyExistingUser && alreadyExistingUser.length > 0) {
         return null;
       } else {
@@ -112,7 +110,7 @@ export class UserService {
     password: string
   ): Promise<Users | undefined> => {
     try {
-      const user = await this.userRepository.findByEmailAndPassword(
+      const user =email&&password&& await this.userRepository.findByEmailAndPassword(
         email,
         password
       );
@@ -143,7 +141,7 @@ export class UserService {
     password: string
   ): Promise<boolean> => {
     try {
-      const user = await this.userRepository.findByEmailAndPassword(
+      const user =email&&password&& await this.userRepository.findByEmailAndPassword(
         email,
         password
       );

@@ -154,10 +154,10 @@ export class UserController {
    *  @returns {Promise<Response>} - The response object
    *
    */
-  AuthenticateUser = async (req: Request, res: Response): Promise<Response> => {
+  authenticateUser = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { email, password } = req.body;
-      const user = await this.userService.getUserByEmailAndPassword(
+      const user =email&&password&& await this.userService.getUserByEmailAndPassword(
         email,
         password
       );
@@ -174,8 +174,36 @@ export class UserController {
         return res.status(401).json({ error: 'Authentication failed' });
       }
     } catch (error) {
-      console.log('PP');
       return res.status(500).json({ error: 'Internal server error' });
     }
   };
+  /**
+   *
+   * Register user with Name, Email and Password
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   *  @returns {Promise<Response>} - The response object
+   *
+   */
+  register =async (req: Request, res: Response):Promise<Response>=>{
+    try{
+      const {name,email,password} =req.body;
+      const id =uuidv4();
+      const user = await this.userService.createUser(id,name,email,password);
+      if(user){
+        const token = sign(
+          { id: user.id, email: user.email },
+          jwtConfig.secretKey,
+          {
+            expiresIn: jwtConfig.expiresIn,
+          }
+        );
+        return res.status(200).json({ token });
+      } else {
+        return res.status(401).json({ error: 'User with this email already exists' });
+      }
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 }

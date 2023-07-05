@@ -32,6 +32,6 @@
       "typeorm": "typeorm-ts-node-commonjs",
       "lint": "eslint src/",
       "lint-fix": "eslint --fix src/ ./*.{ts,js}",
-      "test": "jest src/tests/users/create-user.test.ts"
+      "test": "jest src/tests/users/user-service.test.ts"
    }
 }

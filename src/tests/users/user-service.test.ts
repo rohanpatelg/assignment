@@ -7,14 +7,23 @@ describe('UserService', () => {
   beforeAll(async () => {
     // creating connection with the db and getting the token for further authentication
     app = await getTestApp().then((a: SuperTest<Test>) => a);
-    const response = await app.get('/login');
+    const requestBody = {name:'rohan',email:'test@example.com',password:'1234'}
+    const response = await app.post('/register').send(requestBody);
     token = response.body.token;
+    console.log(token)
   });
 
   afterAll(async () => {
     //closing the connection with the db
     await closeApp();
   });
+  it('should login',async ()=>{
+    const requestBody = {name:'rohan',email:'test@example.com',password:'1234'}
+    const response = await app.get('/login').send(requestBody);
+    token = response.body.token;
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('token');
+  })
   it('create a new user', async () => {
     const requestBody = { name: 'Saw', email: 'saw@fd.com', password: '2345' };
     const response = await app

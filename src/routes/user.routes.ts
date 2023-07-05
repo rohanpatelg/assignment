@@ -8,6 +8,7 @@ import { authenticateToken } from '../middleware/auth';
 const router: Router = express.Router();
 const userController = new UserController();
 
+router.post('/register',userController.register);
 /**
  * Route for user authentication.
  * @name all /login
@@ -18,7 +19,7 @@ const userController = new UserController();
  * @returns {void}
  */
 
-router.all('/login',userController.AuthenticateUser);
+router.all('/login',userController.authenticateUser);
 
 /**
  * Route for retrieving all users.

@@ -59,7 +59,6 @@ export class UserRepository {
    */
   createUser = async (userData: Partial<Users>): Promise<Users> => {
     const newUser = this.usersRepository.create(userData);
-    console.log(newUser);
     return this.usersRepository.save(newUser);
   };
 
