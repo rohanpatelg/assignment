@@ -10,7 +10,6 @@ describe('UserService', () => {
     const requestBody = {name:'rohan',email:'test@example.com',password:'1234'}
     const response = await app.post('/register').send(requestBody);
     token = response.body.token;
-    console.log(token)
   });
 
   afterAll(async () => {
@@ -19,7 +18,7 @@ describe('UserService', () => {
   });
   it('should login',async ()=>{
     const requestBody = {name:'rohan',email:'test@example.com',password:'1234'}
-    const response = await app.get('/login').send(requestBody);
+    const response = await app.post('/login').send(requestBody);
     token = response.body.token;
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty('token');

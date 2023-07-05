@@ -4,7 +4,7 @@ It is a TypeScript CRUD application built with TypeORM, PostgreSQL, and Express.
 
 ## Assumptions
 1. This is a simple CRUD operation app.
-2. You can perform any CRUD operations after registering yourself by hitting the endpoint /register. More details on Usage->How to verify endpoints.
+2. You can perform any CRUD operations after registering yourself by hitting the endpoint `/register`. More details on **Usage->How to verify endpoints**.
 3. With limited information I made this app with basic possible functionalities.
 ## Prerequisites
 
@@ -50,7 +50,7 @@ npm run start
 The application provides the following API endpoints:
 
 - `POST /register`- Register the user with name, password and email.
-- `ALL /login` - Login with the user email and password. If user already exists, it will generate a token and send it as a response body.
+- `POST /login` - Login with the user email and password. If user already exists, it will generate a token and send it as a response body.
 - `GET /users` - Get all users. Pass email and password in body of request
 - `GET /user` - Get a specific user by email and password. Pass email and password in body of request
 - `POST /users` - Create a new user. Pass name,email and password in body of request
@@ -97,7 +97,7 @@ The project has the following folder structure:
   - `middleware/` - Contains custom middleware functions.
   - `repository/` - Handles database operations and communicates with the entities.
   - `service/` - Implements the business logic and interacts with repositories.
-  - `lib/app.ts` - Creates the Express app, registers routes.Creates the connection with database.
+  - `lib/app.ts` - Creates the Express app, registers routes.Creates and destroys the connection with database.
   - `routes/` - Handles the routes and middleware.
   - `config.ts` - Stores JWT configuration settings.
   - `index.ts` - Entry point of the application.
@@ -105,6 +105,10 @@ The project has the following folder structure:
   - `users/user-service` - Unit tests for controllers.
 - `data-source.ts` - Configuration file for Postgres.
 - `bootstrap.ts` - Application instance file for testing
+
+## Extra
+1. Eslint is used to maintain the code structured in all the files.
+2.  
 ## Author
 
 Rohan Patel

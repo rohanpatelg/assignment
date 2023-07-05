@@ -11,7 +11,7 @@ const userController = new UserController();
 router.post('/register',userController.register);
 /**
  * Route for user authentication.
- * @name all /login
+ * @name POST /login
  * @function
  * @memberof module:routes
  * @param {Request} req - The request object.
@@ -19,7 +19,7 @@ router.post('/register',userController.register);
  * @returns {void}
  */
 
-router.all('/login',userController.authenticateUser);
+router.post('/login',userController.authenticateUser);
 
 /**
  * Route for retrieving all users.
