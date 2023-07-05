@@ -7,7 +7,7 @@ describe("UserService", () => {
   beforeAll(async () => {
     // creating connection with the db and getting the token for further authentication
     app = await getTestApp().then((a: SuperTest<Test>) => a);
-    const response = await app.get("/login?id=1");
+    const response = await app.get("/login");
     token = response.body.token;
   });
 
