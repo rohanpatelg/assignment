@@ -1,32 +1,117 @@
+import { SuperTest, Test } from "supertest";
+import { getTestApp, closeApp } from "../../../bootstrap";
 
-import {SuperTest,Test} from 'supertest';
-import { DataSource } from 'typeorm';
-import { getTestApp } from '../../../bootstrap';
-import { UserService } from '../../service/user.service';
-// Your Express app configuration file
+let app: SuperTest<Test>;
+describe("UserService", () => {
+  let token: string;
+  beforeAll(async () => {
+    // creating connection with the db and getting the token for further authentication
+    app = await getTestApp().then((a: SuperTest<Test>) => a);
+    const response = await app.get("/login?id=1");
+    token = response.body.token;
+  });
 
-let dataSource: DataSource;
-let app:SuperTest<Test>;
-const userService: UserService = new UserService();
-
-test("Sd",async()=>{
-    app = await getTestApp().then((a:SuperTest<Test>)=>a);
-    //console.log(app)
-    const response = await app.get('/users/1');
+  afterAll(async () => {
+    //closing the connection with the db
+    await closeApp();
+  });
+  it("create a new user", async () => {
+    const requestBody = { name: "Saw", email: "saw@fd.com", password: "2345" };
+    const response = await app
+      .post("/users")
+      .set("Authorization", "Bearer " + token)
+      .send(requestBody);
+    expect(response.statusCode).toEqual(201);
+  });
+  it("error creating a user if any one field is missing", async () => {
+    const requestBody = { email: "ernejkr@fd.com" };
+    const response = await app
+      .post("/users")
+      .set("Authorization", "Bearer " + token)
+      .send(requestBody);
+    expect(response.statusCode).toEqual(400);
+    expect(response.body).toHaveProperty(
+      "error",
+      "Name, Email and Password must be provided"
+    );
+  });
+  it("error creating a user if user already exists", async () => {
+    const requestBody = { name: "Saw", email: "saw@fd.com", password: "25" };
+    const response = await app
+      .post("/users")
+      .set("Authorization", "Bearer " + token)
+      .send(requestBody);
+    expect(response.statusCode).toEqual(400);
+    expect(response.body).toHaveProperty(
+      "error",
+      "Could not create User, user with this email already exists"
+    );
+  });
+  it("get all the users", async () => {
+    const response = await app
+      .get("/users")
+      .set("Authorization", "Bearer " + token);
     expect(response.statusCode).toEqual(200);
-    
-})
-// before(done => {
-//   // Create a new instance of DataSource
-//   getTestApp().then((a:SuperTest<Test>) => { app = a;done(); }).catch(done);
-// });
-// describe("GET /users/1",()=>{
-//     before(done => {
-//         userService.getUserById("1").then(()=>done())
-//     });
+    expect(response.body.length).toBeGreaterThan(0);
+  });
+  it("get the user if it exists by Email and Password", async () => {
+    const requestBody = { email: "saw@fd.com", password: "2345" };
+    const response = await app
+      .get("/user")
+      .set("Authorization", "Bearer " + token)
+      .send(requestBody);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body[0]).toHaveProperty("email");
+  });
+  it("error if user does not exist, Email or password is incorrect", async () => {
+    const requestBody = { email: "Sawssss@gfg.co", password: "25" };
+    const response = await app
+      .get("/user")
+      .set("Authorization", "Bearer " + token)
+      .send(requestBody);
+    expect(response.statusCode).toEqual(404);
+    expect(response.body).toHaveProperty(
+      "error",
+      "No users found with that email and password"
+    );
+  });
 
-//     it("should return a user", done => {
-//         app.get("/users/1").expect(200, done);
-//     });
-// })
-  
+  it("update name of the user if it exists based on Email and Password", async () => {
+    const requestBody = { name: "pop", email: "saw@fd.com", password: "2345" };
+    const response = await app
+      .put("/users")
+      .set("Authorization", "Bearer " + token)
+      .send(requestBody);
+    console.log(response.body);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body[0]).toHaveProperty("email");
+  });
+  it("error updating the user if it does not exists based on Email and Password", async () => {
+    const requestBody = { email: "ernejdfdfdfkr@fd.com", password: "2345" };
+    const response = await app
+      .put("/users")
+      .set("Authorization", "Bearer " + token)
+      .send(requestBody);
+    expect(response.statusCode).toEqual(404);
+    expect(response.body).toHaveProperty(
+      "error",
+      "Cannot update user, make sure user is valid"
+    );
+  });
+  it("delete the user if it exists based on Email and Password", async () => {
+    const requestBody = { email: "saw@fd.com", password: "2345" };
+    const response = await app
+      .delete("/users")
+      .set("Authorization", "Bearer " + token)
+      .send(requestBody);
+    expect(response.statusCode).toEqual(200);
+  });
+  it("error deleting the user if it does not exist based on Email and Password", async () => {
+    const requestBody = { email: "sawhi@fd.com", password: "2345" };
+    const response = await app
+      .delete("/users")
+      .set("Authorization", "Bearer " + token)
+      .send(requestBody);
+    expect(response.statusCode).toEqual(404);
+  });
+});

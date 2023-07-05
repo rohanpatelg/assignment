@@ -3,8 +3,6 @@ import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from 'typeorm'
 @Entity()
 export class Users {
 
-    @PrimaryColumn()
-    id: string
 
     @Column()
     name: string
@@ -15,4 +13,8 @@ export class Users {
     @Column()
     password: string
 
+    @PrimaryGeneratedColumn("uuid")
+    id: string
+
 }
+

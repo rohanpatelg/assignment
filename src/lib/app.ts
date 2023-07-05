@@ -24,7 +24,14 @@ export class App{
             return App._app;
 
         }).catch((err: any) => {
-            console.log(err);
+            console.log("Error creating connection with db..");
         });
+    }
+    public static async closeApp(): Promise<void>{
+        await AppDataSource.destroy().then(()=>{
+            console.log("closing connection with db..")
+        }).catch((err: any) => {
+            console.log("Error closing connection the db..")
+        })
     }
 }

@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { UserService } from '../service/user.service';
 import { sign } from 'jsonwebtoken';
 import { jwtConfig } from '../../config';
+import {v4 as uuidv4} from 'uuid'
 const userService = new UserService();
 
 // Controller functions for handling requests
@@ -21,14 +22,15 @@ export async function getUsers(req: Request, res: Response) {
   }
 }
 
-export async function getUserById(req: Request, res: Response) {
+export async function getUserByEmailAndPassword(req: Request, res: Response) {
   try{
-    const { id } = req.params;
-    const user = await userService.getUserById(id);
+    //const { id } = req.params;
+    const {email,password} = req.body;
+    const user = await userService.getUserByEmailandPassword(email,password);
     if(user && user.length>0)
       res.json(user);
     else
-    res.status(404).json({error: 'No users found with that id'})
+    res.status(404).json({error: 'No users found with that email and password'})
   }
   catch(err){
     res.status(500).json({error: 'Internal server error'})
@@ -37,18 +39,18 @@ export async function getUserById(req: Request, res: Response) {
 
 export async function createUser(req: Request, res: Response) {
   try{
-    console.log('PP')
-    const { id,name, email,password } = req.body;
-    console.log(id,name,email,password);
-    if(email===undefined || id===undefined || name===undefined || password===undefined){
-      res.json({message: 'Id, Name, Email and Password must be provided'});
+
+    const { name, email,password } = req.body;
+    if(email===undefined  || name===undefined || password===undefined){
+      res.status(400).json({error: 'Name, Email and Password must be provided'});
       return;
     }
+    const id = uuidv4();
     const user = await userService.createUser(id,name, email, password);
     if(user)
       res.status(201).json(user);
     else{
-      res.json({error: 'Could not create User'})
+      res.status(400).json({error: 'Could not create User, user with this email already exists'})
     }
   }
   catch(err){
@@ -57,13 +59,12 @@ export async function createUser(req: Request, res: Response) {
   }
 }
 
-export async function updateUserById(req: Request, res: Response) {
+export async function updateNameByEmailAndPassword(req: Request, res: Response) {
   try{
-    const { id } = req.params;
     const { name, email,password } = req.body;
-    const user = await userService.updateUserById(id, name, email,password);
+    const user = await userService.updateNameByEmailAndPassword( name, email,password);
     if(user && user.length>0)
-    res.json(user);
+    res.status(200).json(user);
     else
       res.status(404).json({error: 'Cannot update user, make sure user is valid'})
   }catch(err) {
@@ -71,11 +72,15 @@ export async function updateUserById(req: Request, res: Response) {
   }
 }
 
-export async function deleteUserById(req: Request, res: Response) {
+export async function deleteUserByEmailAndPassword(req: Request, res: Response) {
   try{
-    const { id } = req.params;
-    await userService.deleteUserById(id);
-    res.json('Successfully deleted user with id ' + id);
+    const {email,password} = req.body;
+    const result = await userService.deleteUserByEmailAndPassword(email,password);
+    if(result && result.length>0 && result!=null){
+      res.status(200).json('Successfully deleted user with email ' + email);
+    }
+    else
+      return res.status(404).json({error:"Cannot delete user. User does not exist"})
   }catch(err){
     console.log('Error deleting user',err);
     res.status(500).json({message: 'Internal server error'});
@@ -83,11 +88,11 @@ export async function deleteUserById(req: Request, res: Response) {
 }
 export async function AuthenticateUser(req: Request, res: Response) {
   try {
-    const {id}  = req.query;
-    console.log(req)
-    console.log(id)
-    const user = await userService.getUserById(id as string);
-    console.log(user)
+    const {email,password} = req.body;
+    //console.log(req)
+    //console.log(id)
+    const user = await userService.getUserByEmailandPassword(email,password);
+    //console.log(user)
     if (user) {
       const token = sign(
         { id: user[0].id, email: user[0].email },
