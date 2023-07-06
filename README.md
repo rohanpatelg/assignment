@@ -1,11 +1,12 @@
 # Assignment
 
-It is a TypeScript CRUD application built with TypeORM, PostgreSQL, and Express. It follows the Controller-Service-Repository pattern to handle the application logic and data persistence. Jest is used for unit testing.
-
+It is a TypeScript based CRUD application built with TypeORM, PostgreSQL, and Express. It follows the Controller-Service-Repository pattern to handle the application logic and data persistence. Jest is used for unit testing.
 ## Assumptions
 1. This is a simple CRUD operation app.
 2. You can perform any CRUD operations after registering yourself by hitting the endpoint `/register`. More details on **Usage->How to verify endpoints**.
 3. With limited information I made this app with basic possible functionalities.
+4. For handling dependency injection I used `tsyringe`
+5. All crud operations require require your authentication so please register via any random data(name,email,password).
 ## Prerequisites
 
 Before running this application, ensure that you have the following dependencies installed:
@@ -49,13 +50,14 @@ npm run start
 
 The application provides the following API endpoints:
 
-- `POST /register`- Register the user with name, password and email.
+- `POST /register`- Register the user with name, password and email. Pass name, emailand password on the request body.
 - `POST /login` - Login with the user email and password. If user already exists, it will generate a token and send it as a response body.
-- `GET /users` - Get all users. Pass email and password in body of request
-- `GET /user` - Get a specific user by email and password. Pass email and password in body of request
+- `GET /users` - Get all users.
+- `GET /users/:name` - Get all users with the name passed as a parameter.
+- `GET /user` - Get a specific user by email. Pass email in body of request
 - `POST /users` - Create a new user. Pass name,email and password in body of request
-- `PUT /users` - Update the name of the user. Pass name, email and password of a user in body of request
-- `DELETE /users` - Delete a user by email and password. Pass email and password in body of request
+- `PUT /user` - Update the name of the user. Pass name, email and password of a user in the body of request
+- `DELETE /user` - Delete a user by email and password. Pass email and password in body of request
 
 
 ## How to verify the Enpoints
@@ -69,7 +71,7 @@ The application provides the following API endpoints:
 
 ## Testing
 
-The application includes unit tests implemented with Jest. To run the tests, use the following command:
+The application includes unit tests implemented with Jest and Supertest. To run the tests, use the following command:
 To run the test cases, run the following command
 ```shell
 npm run test
@@ -86,12 +88,13 @@ npm run test
 9. error updating the user if it does not exists based on Email and Password.
 10. delete the user if it exists based on Email and Password.
 11. error deleting the user if it does not exist based on Email and Password.
-
+12. get all the users with the name.
 ## Folder Structure
 
 The project has the following folder structure:
 
 - `src/` - Contains the source code files.
+  - `container/container.ts` - Registers the classes for automatic injection using tsyringe.
   - `controllers/` - Implements the API route handlers and delegates the logic to services.
   - `entity/` - Defines the database entity models using TypeORM decorators.
   - `middleware/` - Contains custom middleware functions.
@@ -107,8 +110,10 @@ The project has the following folder structure:
 - `bootstrap.ts` - Application instance file for testing
 
 ## Extra
-1. Eslint is used to maintain the code structured in all the files.
-2.  
+1. Eslint is used to maintain the uniform code structured in all the files.
+```shell
+npm run lint-fix
+```
 ## Author
 
 Rohan Patel

@@ -1,10 +1,9 @@
-
 import { Request, Response } from 'express';
 import { UserService } from '../service/user.service';
 import { sign } from 'jsonwebtoken';
 import { jwtConfig } from '../../config';
 import { v4 as uuidv4 } from 'uuid';
-import {injectable,inject} from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 
 @injectable()
 /**
@@ -13,8 +12,8 @@ import {injectable,inject} from 'tsyringe';
 export class UserController {
   public userService: UserService;
 
-   /**
-    * Initializes the Service
+  /**
+   * Initializes the Service
    */
   constructor(@inject(UserService) userService: UserService) {
     this.userService = userService;
@@ -38,6 +37,46 @@ export class UserController {
 
   /**
    *
+   * Get a user by Email.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {Promise<Response>} - The response object
+   */
+  getUsersByName = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { name } = req.params;
+      const users = name && (await this.userService.getUsersByName(name));
+      if (users) return res.status(200).json(users);
+      else
+        return res.status(404).json({ error: 'No users found with that name' });
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  /**
+   *
+   * Get a user by Email.
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @returns {Promise<Response>} - The response object
+   */
+  getUserByEmail = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { email } = req.body;
+      const user = email && (await this.userService.getUserByEmail(email));
+      if (user && user != null) {
+        return res.status(200).json(user);
+      } else
+        return res
+          .status(404)
+          .json({ error: 'No users found with that email' });
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  /**
+   *
    * Get a user by Email and Password.
    * @param {Request} req - The request object.
    * @param {Response} res - The response object.
@@ -54,7 +93,7 @@ export class UserController {
         email,
         password
       );
-      if (user) return res.json(user);
+      if (user) return res.status(200).json(user);
       else
         return res
           .status(404)
@@ -105,7 +144,7 @@ export class UserController {
   ): Promise<Response> => {
     try {
       const { name, email, password } = req.body;
-      const user = await this.userService.updateNameByEmailAndPassword(
+      const user =email&&password&& await this.userService.updateNameByEmailAndPassword(
         name,
         email,
         password
@@ -114,7 +153,7 @@ export class UserController {
       else
         return res
           .status(404)
-          .json({ error: 'Cannot update user, make sure user is valid' });
+          .json({ error: 'Cannot update user, make sure the user details you passed on request body is valid' });
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -133,7 +172,7 @@ export class UserController {
   ): Promise<Response> => {
     try {
       const { email, password } = req.body;
-      const result = await this.userService.deleteUserByEmailAndPassword(
+      const result = email&&password&&await this.userService.deleteUserByEmailAndPassword(
         email,
         password
       );
@@ -159,10 +198,10 @@ export class UserController {
   authenticateUser = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { email, password } = req.body;
-      const user =email&&password&& await this.userService.getUserByEmailAndPassword(
-        email,
-        password
-      );
+      const user =
+        email &&
+        password &&
+        (await this.userService.getUserByEmailAndPassword(email, password));
       if (user) {
         const token = sign(
           { id: user.id, email: user.email },
@@ -187,12 +226,12 @@ export class UserController {
    *  @returns {Promise<Response>} - The response object
    *
    */
-  register =async (req: Request, res: Response):Promise<Response>=>{
-    try{
-      const {name,email,password} =req.body;
-      const id =uuidv4();
-      const user = await this.userService.createUser(id,name,email,password);
-      if(user){
+  register = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { name, email, password } = req.body;
+      const id = uuidv4();
+      const user = await this.userService.createUser(id, name, email, password);
+      if (user) {
         const token = sign(
           { id: user.id, email: user.email },
           jwtConfig.secretKey,
@@ -202,10 +241,12 @@ export class UserController {
         );
         return res.status(200).json({ token });
       } else {
-        return res.status(401).json({ error: 'User with this email already exists' });
+        return res
+          .status(401)
+          .json({ error: 'User with this email already exists' });
       }
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }
-  }
+  };
 }

@@ -1,7 +1,7 @@
 // src/services/UserService.ts
 
 import { UserRepository } from '../repository/user.repository';
-import { Users } from '../entity/User.entity';
+import { Users } from '../entity/user.entity';
 import {injectable,inject} from 'tsyringe'
 @injectable()
 /**
@@ -27,8 +27,23 @@ export class UserService {
   };
 
   /**
+   * Get a user by name.
+   * @param {string} name - The name of the user.
+   * @returns {Users[]} The user object.
+   */
+  getUsersByName=async(name: string): Promise<Users[]>=>{
+    try{
+      const users = name && await this.userRepository.findByName(name);
+      return users;
+    }catch (err) {
+      console.log('Error retrieving user:', err);
+      throw err;
+    }
+  }
+
+  /**
    * Get a user by Email.
-   * @param {string} id - The ID of the user.
+   * @param {string} email - The email of the user.
    * @returns {Users} The user object.
    */
 

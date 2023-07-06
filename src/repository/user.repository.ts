@@ -1,4 +1,4 @@
-import { Users } from '../entity/User.entity';
+import { Users } from '../entity/user.entity';
 import { getRepository } from '../data-source';
 import { Repository } from 'typeorm';
 import {injectable} from 'tsyringe'
@@ -27,6 +27,19 @@ export class UserRepository {
   findAll = async (): Promise<Users[] | undefined> => {
     return this.usersRepository.find();
   };
+
+
+  /**
+   * 
+   * Get a user by email.
+   * @param {string} email - The email of the user.
+   * @returns {Promise<User[]>} A promise that resolves to the user object.
+   * 
+   */
+
+  findByName = async (name: string): Promise<Users[] | undefined> => {
+    return this.usersRepository.findBy({name:name});
+  }
 
   /**
    * 

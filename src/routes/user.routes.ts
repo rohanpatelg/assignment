@@ -35,8 +35,19 @@ router.post('/login',userController.authenticateUser);
 router.get('/users', authenticateToken,userController.getUsers);
 
 /**
- * Route for retrieving a user based on Email and Password.
- * @name GET /users
+ * Route for retrieving a user based on Email.
+ * @name GET /user
+ * @function
+ * @memberof module:routes
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ * @returns {void}
+ */
+router.get('/users/:name', authenticateToken,userController.getUsersByName)
+
+/**
+ * Route for retrieving a user based on Email.
+ * @name GET /user
  * @function
  * @memberof module:routes
  * @param {Request} req - The request object.
@@ -44,7 +55,7 @@ router.get('/users', authenticateToken,userController.getUsers);
  * @returns {void}
  */
 
-router.get('/user',authenticateToken, userController.getUserByEmailAndPassword);
+router.get('/user',authenticateToken, userController.getUserByEmail);
 
 /**
  * Route for creating a user.
@@ -60,7 +71,7 @@ router.post('/users',authenticateToken, userController.createUser);
 
 /**
  * Route for updating a user.
- * @name PUT /users
+ * @name PUT /user
  * @function
  * @memberof module:routes
  * @param {Request} req - The request object.
@@ -68,11 +79,11 @@ router.post('/users',authenticateToken, userController.createUser);
  * @returns {void}
  */
 
-router.put('/users',authenticateToken, userController.updateNameByEmailAndPassword);
+router.put('/user',authenticateToken, userController.updateNameByEmailAndPassword);
 
 /**
  * Route for deleting a user.
- * @name DELETE /users
+ * @name DELETE /user
  * @function
  * @memberof module:routes
  * @param {Request} req - The request object.
@@ -80,6 +91,6 @@ router.put('/users',authenticateToken, userController.updateNameByEmailAndPasswo
  * @returns {void}
  */
 
-router.delete('/users',authenticateToken, userController.deleteUserByEmailAndPassword);
+router.delete('/user',authenticateToken, userController.deleteUserByEmailAndPassword);
 
 export default router;

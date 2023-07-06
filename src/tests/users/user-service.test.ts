@@ -62,6 +62,14 @@ describe('UserService', () => {
     expect(response.statusCode).toEqual(200);
     expect(response.body.length).toBeGreaterThan(0);
   });
+  it('get all the users with the name', async () => {
+    const param = 'Saw';
+    const response = await app
+      .get(`/users/${param}`)
+      .set('Authorization', 'Bearer ' + token);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.length).toBeGreaterThan(0);
+  });
   it('get the user if it exists by Email and Password', async () => {
     const requestBody = { email: 'saw@fd.com', password: '2345' };
     const response = await app
@@ -80,14 +88,14 @@ describe('UserService', () => {
     expect(response.statusCode).toEqual(404);
     expect(response.body).toHaveProperty(
       'error',
-      'No users found with that email and password'
+      'No users found with that email'
     );
   });
 
   it('update name of the user if it exists based on Email and Password', async () => {
     const requestBody = { name: 'pop', email: 'saw@fd.com', password: '2345' };
     const response = await app
-      .put('/users')
+      .put('/user')
       .set('Authorization', 'Bearer ' + token)
       .send(requestBody);
     console.log(response.body);
@@ -97,19 +105,19 @@ describe('UserService', () => {
   it('error updating the user if it does not exists based on Email and Password', async () => {
     const requestBody = { email: 'ernejdfdfdfkr@fd.com', password: '2345' };
     const response = await app
-      .put('/users')
+      .put('/user')
       .set('Authorization', 'Bearer ' + token)
       .send(requestBody);
     expect(response.statusCode).toEqual(404);
     expect(response.body).toHaveProperty(
       'error',
-      'Cannot update user, make sure user is valid'
+      'Cannot update user, make sure the user details you passed on request body is valid'
     );
   });
   it('delete the user if it exists based on Email and Password', async () => {
     const requestBody = { email: 'saw@fd.com', password: '2345' };
     const response = await app
-      .delete('/users')
+      .delete('/user')
       .set('Authorization', 'Bearer ' + token)
       .send(requestBody);
     expect(response.statusCode).toEqual(200);
@@ -117,7 +125,7 @@ describe('UserService', () => {
   it('error deleting the user if it does not exist based on Email and Password', async () => {
     const requestBody = { email: 'sawhi@fd.com', password: '2345' };
     const response = await app
-      .delete('/users')
+      .delete('/user')
       .set('Authorization', 'Bearer ' + token)
       .send(requestBody);
     expect(response.statusCode).toEqual(404);
