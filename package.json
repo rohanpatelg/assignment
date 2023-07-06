@@ -25,6 +25,7 @@
       "mocha": "^10.2.0",
       "pg": "^8.4.0",
       "reflect-metadata": "^0.1.13",
+      "tsyringe": "^4.8.0",
       "typeorm": "0.3.17"
    },
    "scripts": {

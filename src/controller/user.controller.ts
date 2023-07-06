@@ -4,7 +4,9 @@ import { UserService } from '../service/user.service';
 import { sign } from 'jsonwebtoken';
 import { jwtConfig } from '../../config';
 import { v4 as uuidv4 } from 'uuid';
+import {injectable,inject} from 'tsyringe';
 
+@injectable()
 /**
  * Controller for handling user-related requests.
  */
@@ -14,8 +16,8 @@ export class UserController {
    /**
     * Initializes the Service
    */
-  constructor() {
-    this.userService = new UserService();
+  constructor(@inject(UserService) userService: UserService) {
+    this.userService = userService;
   }
   /**
    * Get all users.

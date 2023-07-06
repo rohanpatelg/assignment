@@ -1,8 +1,12 @@
 import { Users } from '../entity/User.entity';
 import { getRepository } from '../data-source';
 import { Repository } from 'typeorm';
+import {injectable} from 'tsyringe'
+
+@injectable()
 /**
  * Repository for user data access.
+ * 
  */
 export class UserRepository {
   private usersRepository: Repository<Users>;

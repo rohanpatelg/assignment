@@ -2,6 +2,8 @@
 
 import { UserRepository } from '../repository/user.repository';
 import { Users } from '../entity/User.entity';
+import {injectable,inject} from 'tsyringe'
+@injectable()
 /**
  * Service for user-related operations.
  */
@@ -11,8 +13,8 @@ export class UserService {
    /**
    * Initializes the repository
    */
-  constructor() {
-    this.userRepository = new UserRepository();
+  constructor(@inject(UserRepository) userRepository: UserRepository) {
+   this.userRepository = userRepository;
   }
   getAllUsers = async (): Promise<Users[]> => {
     try {

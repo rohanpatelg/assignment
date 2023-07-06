@@ -5,9 +5,10 @@
 import express, { Router } from 'express';
 import { UserController } from '../controller/user.controller';
 import { authenticateToken } from '../middleware/auth';
-const router: Router = express.Router();
-const userController = new UserController();
+import {container} from 'tsyringe'
 
+const router: Router = express.Router();
+const userController = container.resolve<UserController>(UserController);
 router.post('/register',userController.register);
 /**
  * Route for user authentication.
