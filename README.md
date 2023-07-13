@@ -1,4 +1,4 @@
-# Assignment
+# Practice
 
 It is a TypeScript based CRUD application built with TypeORM, PostgreSQL, and Express. It follows the Controller-Service-Repository pattern to handle the application logic and data persistence. Jest is used for unit testing.
 ## Assumptions
